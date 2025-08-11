@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB-1</title>
+    <script type="text/javascript">
+        var canvas, clockwidth, centerX, centerY, ctx;
+
+        function setAnalog(cw) {
+            canvas = document.getElementById("myCanvas");
+            ctx = canvas.getContext("2d");
+            clockwidth = cw;
+            centerX = canvas.width / 2;
+            centerY = canvas.height / 2;
+            tick();
+            window.setInterval(tick, 1000);
+        }
+        function setAnalog2(cw) {
+            canvas = document.getElementById("myCanvas");
+            ctx = canvas.getContext("2d");
+            clockwidth = cw;
+            centerX = canvas.width / 2;
+            centerY = canvas.height / 2;
+        
+        }
+
+        function tick() {
+            var date = new Date();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawStaticElts();
+
+       
+            var hours = date.getHours() % 12;
+            var minutes = date.getMinutes();
+            var hourAngle = (hours * 30) + (minutes / 2);
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 4;
+            drawHand(clockwidth / 3, hourAngle);
+
+  
+            var minuteAngle = minutes * 6;
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 2;
+            drawHand(clockwidth / 2.4, minuteAngle);
+
+        
+            var seconds = date.getSeconds();
+            var secondAngle = seconds * 6;
+            ctx.strokeStyle = "red";
+            ctx.lineWidth = 1;
+            drawHand(clockwidth / 2.2, secondAngle);
+
+      
+            drawDigital(date);
+        }
+
+        function drawStaticElts() {
+    
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, clockwidth / 2, 0, 2 * Math.PI, false);
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.closePath();
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 4, 0, 2 * Math.PI, false);
+            ctx.fillStyle = "black";
+            ctx.fill();
+            ctx.closePath();
+
+            drawTicks();
+            drawNumbers();
+        }
+
+        function drawTicks() {
+            for (var i = 0; i < 60; i++) {
+                var angle = (i * 6) * Math.PI / 180;
+                var inner = (i % 5 === 0) ? clockwidth / 2.1 : clockwidth / 2.05;
+                var outer = clockwidth / 2;
+                var x1 = centerX + Math.sin(angle) * inner;
+                var y1 = centerY - Math.cos(angle) * inner;
+                var x2 = centerX + Math.sin(angle) * outer;
+                var y2 = centerY - Math.cos(angle) * outer;
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.strokeStyle = "black";
+                ctx.lineWidth = (i % 5 === 0) ? 2 : 1;
+                ctx.stroke();
+            }
+        }
+
+        function drawNumbers() {
+            ctx.font = "16px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            for (var i = 1; i <= 12; i++) {
+                var angle = (i * 30) * Math.PI / 180;
+                var x = centerX + Math.sin(angle) * (clockwidth / 2.3);
+                var y = centerY - Math.cos(angle) * (clockwidth / 2.3);
+                ctx.fillText(i, x, y);
+            }
+        }
+
+        function drawHand(length, angle) {
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(angle * Math.PI / 180);
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, -length);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.restore();
+        }
+
+        function drawDigital(date) {
+      
+            var hours = date.getHours().toString().padStart(2, '0');
+            var minutes = date.getMinutes().toString().padStart(2, '0');
+            var seconds = date.getSeconds().toString().padStart(2, '0');
+            var timeString = `${hours}:${minutes}:${seconds}`;
+
+    
+            var dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+
+       
+            var timeZoneName = date.toLocaleDateString('en-US', { timeZoneName: 'short' })
+                                  .split(' ')
+                                  .pop();
+
+            ctx.font = "20px Arial";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "black";
+
+    
+            ctx.fillText(timeString, centerX, centerY + clockwidth / 2 + 20);
+
+       
+            ctx.font = "16px Arial";
+            ctx.fillText(`${dayName} (${timeZoneName})`, centerX, centerY + clockwidth / 2 + 45);
+        }
+
+        window.onload = function () {
+            setAnalog(360);
+           
+        }
+       
+
+    </script>
+</head>
+<body>
+    <h1>My Heading</h1>
+    <p>This is a very basic webpage.</p>
+    <canvas id="myCanvas" width="600" height="600" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML5 canvas tag.
+    </canvas>
+</body>
+</html>

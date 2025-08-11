@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Four Quadrant Canvas Drawing</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            border: 2px solid #333;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas" width="600" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        function draw() {
+            ctx.clearRect(0, 0, 600, 600);
+            
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(300, 0);
+            ctx.lineTo(300, 600);
+            ctx.moveTo(0, 300);
+            ctx.lineTo(600, 300);
+            ctx.stroke();
+            
+            ctx.strokeStyle = 'orange';
+            ctx.lineWidth = 8;
+            ctx.lineCap = 'butt';
+            
+            const stripeSpacing = 20;
+            const leftMargin = 25;
+            const rightEdge = 275;
+            const topMargin = 30;
+            
+            for (let i = 0; i < 12; i++) {
+                const y = topMargin + (i * stripeSpacing);
+                ctx.beginPath();
+                ctx.moveTo(leftMargin, y);
+                ctx.lineTo(rightEdge, y);
+                ctx.stroke();
+            }
+            
+            ctx.fillStyle = 'blue';
+            
+            ctx.beginPath();
+            ctx.moveTo(310, 40);
+            ctx.lineTo(550, 40);
+            ctx.lineTo(310, 280);
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.moveTo(350, 40);
+            ctx.lineTo(590, 40);
+            ctx.lineTo(590, 280);
+            ctx.closePath();
+            ctx.fill();
+            
+            const centerX = 150;
+            const colors = ['red', 'yellow', 'lime', 'cyan', 'magenta'];
+            const sizes = [
+                [120, 35],
+                [90, 28],
+                [65, 25],
+                [50, 22],
+                [35, 20]
+            ];
+            
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            
+            for (let i = 0; i < colors.length; i++) {
+                const y = 530 - (i * 35);
+                
+                ctx.fillStyle = colors[i];
+                ctx.beginPath();
+                ctx.ellipse(centerX, y, sizes[i][0], sizes[i][1], 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.ellipse(centerX, y, sizes[i][0], sizes[i][1], 0, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            ctx.fillStyle = 'red';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 3;
+            
+            const heartX = 450;
+            const heartY = 430;
+            const heartScale = 1.5;
+            
+            ctx.beginPath();
+            ctx.moveTo(heartX, heartY + 80 * heartScale);
+            
+            ctx.bezierCurveTo(
+                heartX - 100 * heartScale, heartY + 30 * heartScale,
+                heartX - 100 * heartScale, heartY - 50 * heartScale,
+                heartX, heartY - 30 * heartScale
+            );
+            
+            ctx.bezierCurveTo(
+                heartX + 100 * heartScale, heartY - 50 * heartScale,
+                heartX + 100 * heartScale, heartY + 30 * heartScale,
+                heartX, heartY + 80 * heartScale
+            );
+            
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+        
+        draw();
+    </script>
+</body>
+</html>
